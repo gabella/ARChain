@@ -1,3 +1,14 @@
+# Gabella notes.
+On Linux compile this with GNU gfortran
+```
+gfortran AR-CHAINWH.f -o AR-CHAINWH
+```
+The shell script runarchainWH does a check for an input file and will also
+output some timing file, time.out by default.  Also check the hardcoded
+line for the AR-CHAINWH executable, typically with GWToolsWormholes it will
+be ./ARCHAIN .
+
+
 # DATA EXAMPLE:
   0  5   .1d0    20000.   0.e-3    0.0   1. 1.e-99 0.e0 1.e4  X  1 0  0.0 .70 0.3  1.e-13 0  10000 /IWR,N,DELTAT,TMAX ,step,soft,cmet,Clight, outfile,Ixc,Nbh ,spin, EPS, ivelocity, KSMX ! AT THE END OF THIS EXAMPLE FILE THERE ARE SOME EXPLANATIONS, please take a look!
   1500000  0.  0.  0.  0.  0.  0. 0    m x y z vx vy vz  soft (and the same for all bodies)

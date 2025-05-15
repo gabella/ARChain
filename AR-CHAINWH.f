@@ -18,33 +18,33 @@ c THIS CODE USES THE ALGORITHMIC REGULARIZATION i.e. no coordinate transformatio
       common/tolerancecommon/EPS
       end
 !       The following publications contain info needed for understanding this code
- 
- 
+
+
 ! \bibitem[Hellstr{\"o}m and Mikkola(2010)]{2010CeMDA.106..143H} Hellstr{\"o}m, C., Mikkola, S.\ 2010.\ Explicit algorithmic regularization in the few-body problem for velocity-dependent perturbations.\ Celestial Mechanics and Dynamical Astronomy 106, 143-156.
- 
+
 ! \bibitem[Mikkola and Merritt(2008)]{2008AJ....135.2398M} Mikkola, S., Merritt, D.\ 2008.\ Implementing Few-Body Algorithmic Regularization with Post-Newtonian Terms.\ The Astronomical Journal 135, 2398-2405.
- 
- 
+
+
 ! \bibitem[Mikkola and Merritt(2006)]{2006MNRAS.372..219M} Mikkola, S., Merritt, D.\ 2006.\ Algorithmic regularization with velocity-dependent forces.\ Monthly Notices of the Royal Astronomical Society 372, 219-223.
- 
- 
+
+
 ! \bibitem[Mikkola and Aarseth(2002)]{2002CeMDA..84..343M} Mikkola, S., Aarseth, S.\ 2002.\ A Time-Transformed Leapfrog Scheme.\ Celestial Mechanics and Dynamical Astronomy 84, 343-354.
- 
- 
+
+
 ! \bibitem[Mikkola and Aarseth(1996)]{1996CeMDA..64..197M} Mikkola, S., Aarseth, S.~J.\ 1996.\ A Slow-down Treatment for Close Binaries.\ Celestial Mechanics and Dynamical Astronomy 64, 197-208.
- 
- 
+
+
 ! \bibitem[Mikkola and Aarseth(1993)]{1993CeMDA..57..439M} Mikkola, S., Aarseth, S.~J.\ 1993.\ An implementation of N-body chain regularization.\ Celestial Mechanics and Dynamical Astronomy 57, 439-459.
- 
- 
+
+
 ! \bibitem[Mikkola and Tanikawa(2013)]{2013NewA...20...38M} Mikkola, S., Tanikawa, K.\ 2013.\ Implementation of an efficient logarithmic-Hamiltonian three-body code.\ New Astronomy 20, 38-41.
- 
- 
+
+
 ! \bibitem[Mikkola and Tanikawa(2013)]{2013MNRAS.430.2822M} Mikkola, S., Tanikawa, K.\ 2013.\ Regularizing dynamical problems with the symplectic logarithmic Hamiltonian leapfrog.\ Monthly Notices of the Royal Astronomical Society 430, 2822-2827.
- 
- 
+
+
 ! \bibitem[Mikkola and Tanikawa(1999)]{1999MNRAS.310..745M} Mikkola, S., Tanikawa, K.\ 1999.\ Algorithmic regularization of the few-body problem.\ Monthly Notices of the Royal Astronomical Society 310, 745-749.
- 
+
           Program ARCcode !  This is the main program, not subroutine.
 !         IMPLICIT REAL*8 (A-H,M,O-Z) ! this is in 'ARCparams.CH'
           include 'ARCparams.CH'
@@ -62,7 +62,7 @@ c THIS CODE USES THE ALGORITHMIC REGULARIZATION i.e. no coordinate transformatio
 !         BUT: I always use M_sun=1, lenght unit= 1AU.
 !         IN SUCH A SYSTEM: time is such that 1 year = 2*Pi
 !         C (vel. of light) is approximately = 10,000. (c=299792458 m / s, AU=149597870.7km  ==> c=10065.1 au/t1)
- 
+
 666       CONTINUE ! jump here to start a new simulation in the same run.
           icollision=0
            iopen=0
@@ -76,19 +76,19 @@ c THIS CODE USES THE ALGORITHMIC REGULARIZATION i.e. no coordinate transformatio
 !                         stepr is now obsolete
 !        Look the example cdr* file. It contains some info about the data read here.
 !        (look to the end part of the data file!)
- 
+
          if(N.lt.2)STOP ! if N<2 this code is not needed
          ee=soft**2             ! square of softening lenght (often zero, but can be used)
 ! Fix the original file name, usually autofile.out or similar, to autofile.orig .
          ndot = index(outfile,'.')
-         
+
           open(66,file=outfile(1:ndot-1)//"orig"//outfile(ndot:)) ! output file
           open(99,file=outfile) ! BG 20191021 for positions and velocities, see write(99 below.
           open(67,file='merge.dat') ! output for merger info
           MASS=0
           DO I=1,N
           L=3*(I-1)
-          READ(5,*)M(I),(X(L+K),K=1,3),(V(L+K),K=1,3) ! Read masses, coordinates anf velocities
+          READ(5,*)M(I),(X(L+K),K=1,3),(V(L+K),K=1,3) ! Read masses, coordinates and velocities
           MASS=MASS+M(I) ! determine total mass
           index4output(i)=i  ! initialize output index (to be modified in case of mergers)
           test=M(I)+cdot(x(L+1),X(L+1))+cdot(V(L+1),V(L+1))
@@ -105,7 +105,7 @@ c THIS CODE USES THE ALGORITHMIC REGULARIZATION i.e. no coordinate transformatio
                           end do
           ENER0=0
           NEWREG=.TRUE. ! Now we are starting a new regularized integration
-          !KSMX=10 000 ! only this many steps without return, KSMX is actually read, normally big value recommended 
+          !KSMX=10 000 ! only this many steps without return, KSMX is actually read, normally big value recommended
           goto 200 ! Go to write initial quantities (i.e. at time=0), after which code returns to statement 100
 c
 100       CONTINUE
@@ -117,9 +117,10 @@ c
         call Diagnostic output(time,xwr,cmxx) ! write errors and coords to the given outputfile (name read to variable 'outfile')
                                               ! some more coords are written in the routine MERGE_I1_I2 in case whén a BH swollows an other body
 
-          if(iwr.ge.0) call  Write Elements(time,iopen) ! with respect to M(1), to files aexes.dat, eccs.dat, incs.dat, Omes.dat,omes.dat, 
+          if(iwr.ge.0) call  Write Elements(time,iopen) ! with respect to M(1), to files aexes.dat, eccs.dat, incs.dat, Omes.dat,omes.dat,
           if(iwr.gt.1)call FIND BINARIES(time) ! this is usually unimportant, but may give info about binary formation
-234      format(1x,f18.6,1p,600g13.5)
+Cbg 234      format(1x,f18.6,1p,600g13.5)
+234      format(1x,f19.7,1p,600g17.9)
          !    rs=2*m(1)/clight**2 ! Radius of event horizon  of M1
          IF(TIME.LT.TMAX)then ! continue if not yet at maximum time
           GOTO 100
@@ -127,7 +128,7 @@ c
          goto 666 ! go read data for the next experiment (to stop set a line of zeros into the data file)
          end if
 999         END
- 
+
 
            subroutine Diagnostic output(time,xwr,cmxx)
           include 'ARCparams.CH'
@@ -137,11 +138,11 @@ c
         REAL*8 G0(3),G(3),xwr(NMX3),CMXX(3),CMVX(3),vwr(NMX3) ! BG 201910
            common/vindex/ivelocity
           common/collision/icollision,ione,itwo,iwarning
-          save 
+          save
           if(time.eq.0.0)then
           iENER0=0
           goto 200
-          END IF 
+          END IF
 c        Diagnostics !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
          call   CONSTANTS OF MOTION(ENER1,G,AL)
          IF(ENER0.eq.0.0)THEN
@@ -187,7 +188,7 @@ c               This CONTANTS OF MOTION works only after first cal of ARC ! Ther
 
         write(66,234)time,(xwr(k),k=1,3*n_ini)
 c     & (xwr(k)-xwr(1),xwr(k+1)-xwr(2),xwr(k+2)-xwr(3),k=1,3*n_ini,3) ! Write coords to 66,
-           ! in case of a collision write more in Merge_i1_i2 
+           ! in case of a collision write more in Merge_i1_i2
            ! this is just for figs and/or movies
 C     BG 20191021 try to print out X's and V's with time.
         write(99,234)time,
@@ -195,11 +196,12 @@ C     BG 20191021 try to print out X's and V's with time.
      &       ll=1,n_ini)
 C        write(99,234)time, ((x(k+l-1), k=1,3), (v(k+m-1), m=1,3), l=1,n_ini)
 
-        
+
         call flush(66)
         call flush(99) ! BG 20191021
            end if ! iwr.gt.-2
-234      format(1x,f18.6,1p,600g13.5)
+CBG 234      format(1x,f18.6,1p,600g13.5)
+234      format(1x,f19.7,1p,600g17.9)
            return
 
            end
@@ -238,7 +240,7 @@ C        write(99,234)time, ((x(k+l-1), k=1,3), (v(k+m-1), m=1,3), l=1,n_ini)
            call elmnts
      & (xw,vw,mw,ai(j),ei(j),moi,inc(j),Omi(j),ooi(j),alfai,qi,tqi)
            end do ! i=2,N
-           ! in case of a collision write more in Merge_i1_i2 
+           ! in case of a collision write more in Merge_i1_i2
            ! this is just for figs and/or movies
               if(iopen.eq.0 )then
               iopen=1
@@ -256,14 +258,14 @@ C        write(99,234)time, ((x(k+l-1), k=1,3), (v(k+m-1), m=1,3), l=1,n_ini)
            write(73,171)time,(inc(k),k=2,N_ini) ! i
            write(74,171)time,(Omi(k),k=2,N_ini)  ! \Omega
            write(75,171)time,(ooi(k),k=2,N_ini)  ! \omega
- 
+
            spa=sqrt(cdot(spin,spin))
            if(sp0.eq.0)sp0=spa
            dsp=spa-sp0
            write(76,*)time,spin,dsp ! spin(k), k=1,3 of M1  (|spin|<1),
                                     ! dsp is error in the length of the spin vector
 171        format(1x,f12.3,201g18.10)
- 
+
            call flush(71)
            call flush(72)
            call flush(73)
@@ -273,7 +275,7 @@ C        write(99,234)time, ((x(k+l-1), k=1,3), (v(k+m-1), m=1,3), l=1,n_ini)
            return
               end
 
- 
+
        Subroutine MERGE_I1_I2(time)!Merge the colliding body with the BH, ('time' is here only for write(66....)
         include 'ARCparams.CH'
         REAL*8 SM(NMX),XR(NMX3),XDR(NMX3),xwr(nmx3),ywr(nmx3)
@@ -297,7 +299,7 @@ C        write(99,234)time, ((x(k+l-1), k=1,3), (v(k+m-1), m=1,3), l=1,n_ini)
         end do ! k
         end do !i
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-        do i_delay=1,33!Make the movie FLASH in case of a MERGER. (thefore 33 outputs, each other time out of he movie frame) 
+        do i_delay=1,33!Make the movie FLASH in case of a MERGER. (thefore 33 outputs, each other time out of he movie frame)
         write(66,234)time,
      & (xwr(k)-xwr(1),xwr(k+1)-xwr(2),xwr(k+2)-xwr(3),k=1,3*n_ini,3)
         write(66,234)time,
@@ -324,7 +326,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
           XDR(3*Ione-3+K)=(M(Ione)*V((Ione-1)*3+K)
      &     +M(Itwo)*V((Itwo-1)*3+K))/SM(Ione)
 6         CONTINUE
- 
+
           DO I=Ione+1,Itwo-1
           sm(i)=m(i)
           do k=1,3
@@ -332,11 +334,11 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
           XDR(3*I-3+K)=V(3*I-3+k)
           end do
           end do
- 
+
           do i=Itwo,N-1
           index4output(i)=index4output(i+1)
           end  do
- 
+
           DO I=Itwo+1,N
           sm(i-1)=m(i)
           do k=1,3
@@ -344,13 +346,13 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
           XDR(3*I-6+K)=V(3*I-3+k)
           end do
           end do
- 
+
 !         MOVE THE REDUCED SYSTEM TO M,X,V
 !         New value of the number of bodies.
           N=N-1
           if(Itwo.le.NofBH)NofBH=NofBH-1 ! # of BH's reduced!
- 
- 
+
+
           DO 8 I=1,N
           M(I)=SM(I)
           DO 7 K=1,3
@@ -361,7 +363,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
           icollision=0
              i1wr=index4output(ione)
              i2wr=index4output(itwo) !?? wrong ?? because already changed (above)
- 
+
       write(6,*)' Merge:',i1wr,i2wr-1,' (N, NBH=) (',N,' , ',NofBH, ') '
      &     ,' masses ',(M(k),k=1,n),Myks,Mkax
                 write(67,*)' At time ',time,' bodies number ',ione,
@@ -373,7 +375,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
           write(6,*)' Only one body left!'
           STOP
           end if
- 
+
           RETURN
           END
                                              ! *           *              *
@@ -401,7 +403,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !        cl=speed of light
 !        NOTE: cl=0 => no relativistic terms !!!
 !        Ixc = 2 =>iteration to excat time, 1 => approximate exact time, =0 no exact time but return after CHTIME>DELTAT
-!             often  IXC =0 is fastest,  IXC=1 second fastest,  IXC=2 can be slow (but usually accurate output time). 
+!             often  IXC =0 is fastest,  IXC=1 second fastest,  IXC=2 can be slow (but usually accurate output time).
          INCLUDE 'ARCparams.CH'
          COMMON/DerOfTime/GTIME
          COMMON/DIAGNOSTICS/GAMMA,H,IWR
@@ -416,7 +418,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
          save
 !          Initial constants of motion
 10         CONTINUE !
-           
+
          tnext0=time+deltat
          knx=tnext0/deltat+0.1d0
          tnext=knx*deltat
@@ -427,7 +429,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
            else
            nfalse=nfalse+1
            end if
- 
+
            if(ntrue.gt.nfalse+10 .and. nwritten.eq.0)then
            nwritten=1
            write(6,*)char(7),char(7)
@@ -463,13 +465,13 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
            write(6,*)' STOPPING '
            STOP
            end if
- 
- 
+
+
            CHTIME=0.D0
            icollision=0
            Taika=TIME ! to common
            NofBH=NBH  ! - " -
- 
+
            IF(NEWREG)THEN
            step=0
            iwarning=0
@@ -477,7 +479,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             itemax_used=0
            ee=soft**2  ! to common
            do k=1,3
-           spin(k)=spini(k) ! 2 common 
+           spin(k)=spini(k) ! 2 common
            cmethod(k)=cmet(k) ! 2 common
            end do
            clight=cl    ! -"-
@@ -487,7 +489,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
            M(I)=MX(I)
            mass=mass+m(i)
            END DO
- 
+
            MMIJ=0.D0
            DO I=1,N-1
            DO J=I+1,N
@@ -532,7 +534,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             if(step.eq.0)then
             step=1.e-3
             !call Initial Stepsize(X,V,M,N,ee,step) ! New initial step determination
-                 call Estimate Stepsize(tstep,step) ! 
+                 call Estimate Stepsize(tstep,step) !
             end if
             EPS=TOL
            END IF ! NEWREG
@@ -557,14 +559,14 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             WTTL=Wfunction() ! this may not be necessary, but probably OK.
             call Take Y from XC WC(Y,Nvar) ! CHAIN variables to Y vector
             !IF(IWR.GT.0) WRITE(6,1232)time+chtime,(INAME(KW),KW=1,N) !for checking what is going on
- 
+
 1232         FORMAT(1X,g12.4,' I-CHAIN',20I3)
              END IF ! MUST SWITCH
                                  f2=chtime-tstep!deltaT ! for exact time iteration
                                  d2=gtime
                                  x1=-stime
                                  x2=0
- 
+
       IF(CHTIME.LT.tstep.and.(KSTEPS.lt.KSMX)
      &  .and.(icollision.eq.0))goto 777
 c------------------------------------------------------------------------------------------
@@ -659,24 +661,24 @@ c...............................................................................
          if(test.lt.(-tiny*hs).or.(it+1).eq.(it+1)/5*5)then
          xnew=(x1+x2)/2 ! bisect if out of interval
           end if
- 
+
           sfinal=xnew
- 
+
          call Put Y to XC WC  (Y,Nvar)
 !--------------------------------------------------------------------------
                   call Obtain Order of Y(SY,y)
- 
+
                    do k=1,5
                    step=sfinal-stime
                    if(abs(step).gt.1.d-6*abs(hs).or.k.eq.1)then !!!!
- 
+
                    call  DIFSYAB(Nvar,EPS,SY,step,stime,Y)
                    iskeleita=iskeleita+1
 !                   it=it+1
                    else
                    goto 222
                    end if
- 
+
                    end do
 222               continue
                    call Put Y to XC WC  (Y,Nvar)
@@ -704,7 +706,7 @@ c...............................................................................
            call UPDATE X AND V
            return
            end
- 
+
         subroutine LEAPFROG(STEP,Leaps,stime) !Leapfroging steps for the Bulirsch-Stoer extrapolation
         implicit real*8 (a-h,M,o-z)
         save
@@ -723,7 +725,7 @@ c...............................................................................
         stime=stime+h2
         return
         end
- 
+
         function Wfunction() ! evaluate the TTL-function for time tranformation ! eioo subroutine
         INCLUDE 'ARCparams.CH'
          common/omegacoefficients/OMEC(NMX,NMX)
@@ -761,10 +763,10 @@ c...............................................................................
         if(icount.eq.0)cmethod(2)=0 ! all terms zero anyway (for some different settings of omec)
         return
         end
- 
+
         SUBROUTINE XCMOTION(hs) ! movement of coordinates
         INCLUDE 'ARCparams.CH'
- 
+
          COMMON/IncrementCommon/WTTLinc,XCinc(NMX3),WCinc(NMX3),
      & CMXinc(3),CMVinc(3),ENERGYinc,Energrinc,CHTIMEinc,spin inc(3)
         COMMON/DerOfTime/G
@@ -799,7 +801,7 @@ c...............................................................................
         end do
         RETURN
         END
- 
+
         subroutine PUT V 2 W ! these parameters are needed if there are v-ependent forces
        include 'ARCparams.CH'
        common/vwcommon/Ww(nmx3),WTTLw,cmvw(3),spinw(3)
@@ -814,7 +816,7 @@ c...............................................................................
        end do
        return
        end
- 
+
         subroutine Velocity Dependent Perturbations ! This name tells what this is!
      &   (dT,Va,spina,acc,dcmv,df,dfGR,dspin)
         INCLUDE 'ARCparams.CH'
@@ -830,18 +832,18 @@ c...............................................................................
                  do k=1,3
                  dspin(k)=0
                  end do
- 
+
                  if(Clight.ne.0)then ! include only if Clight set >0
         call Relativistic ACCELERATIONS(dfr,dfGR,Va,spina,dspin)
                  end if
- 
+
         if(ivelocity.gt.0)then ! USED ONLY IF ivelcity.gt.0
         call Non relativistic v_dependent perturbations(dfr)! add v-dependent to dfr(), (e.g. friction)
         end if
         do i=1,3*n
          df(i)=acc(i)+dfr(i)
         end do
- 
+
         call reduce 2 cm(df,m,n,dcmv)
         return
         end
@@ -1044,7 +1046,7 @@ c...............................................................................
          VI(L+K)=V(LF+K)
          END DO
         END DO
- 
+
 !       Chain coordinates & vels !
         !WTTL=0
         DO I=1,N-1
@@ -1065,7 +1067,7 @@ c...............................................................................
         REAL*8 X0(3),V0(3)
         save
 !        Obtain physical variables from chain quantities.
- 
+
         DO K=1,3
         XI(K)=0.0
         VI(k)=0.0
@@ -1119,10 +1121,10 @@ c...............................................................................
         DO I=1,N
         IOLD(I)=INAME(I)
         END DO
- 
+
 !       Find new ones.
         call FIND CHAIN INDICES
- 
+
 !       Construct new chain coordinates. Transformation matrix
 !       (from old to new) has only coefficients -1, 0 or +1.
         DO I=1,3*(N-1)
@@ -1166,10 +1168,10 @@ c...............................................................................
         MC(I)=M(INAME(I)) ! Masses arranged along the chain.
         MASS=MASS+MC(I)
         END DO
- 
+
         RETURN
         END
- 
+
         FUNCTION SQUARE(X,Y) ! |X-Y|^2 ! eioo subroutine
         implicit real*8 (a-h,m,o-z)
         REAL*8 X(3),Y(3),SQUARE
@@ -1178,12 +1180,12 @@ c...............................................................................
         SQUARE=(X(1)-Y(1))**2+(X(2)-Y(2))**2+(X(3)-Y(3))**2+ee
         RETURN
         END
- 
+
         SUBROUTINE DIFSYAB(N,EPS,S,h,t,Y) ! BULIRSCH-STOER EXTRAPOLATOR (i.e. with rationals)
         implicit real*8 (a-h,o-z)
-!       N=number of variables 
+!       N=number of variables
 !       EPS=error tolerance
-!       S(..)  : error<eps*S        
+!       S(..)  : error<eps*S
 !        h stepsize (input & output variable)
 !        t = time (==independent variable, needs not be the time, and ofteni it is not)
 !        Y(..)  all the variables (Y(1) ,,,, Y(N))
@@ -1213,13 +1215,13 @@ c...............................................................................
         JR=2
         JS=3
         DO  J=1,Jmax! 10
- 
+
         do i=1,N
         ys(i)=y(i)
         s(i)=max(abs(ys(i)),s(i))
         end do
 !
- 
+
         IF(BO)then
         D(2)=1.777777777777778D0
         D(4)=7.111111111111111D0
@@ -1229,7 +1231,7 @@ c...............................................................................
         D(4)=9.D0
         D(6)=36.0D0
         end if
- 
+
         IF(J.gt.7)then
         L=7
         D(7)=6.4D1
@@ -1237,22 +1239,22 @@ c...............................................................................
         L=J
         D(L)=M*M
         end if
- 
+
         KONV=L.GT.3
            subH=H/M
            call SubSteps(Y0,YS,subH,M) ! M substeps of size H/M.
         KL=L.LT.2
         GR=L.GT.5
         FS=0.
- 
- 
- 
+
+
+
         DO  I=1,N
         V=DT(I,1)
         C=YS(I)
         DT(I,1)=C
         TA=C
- 
+
         IF(.NOT.KL)THEN
         DO  K=2,L
         B1=D(K)*V
@@ -1279,7 +1281,7 @@ c...............................................................................
         END IF ! .NOT.KL.
         YR(I)=TA
         END DO ! I=1,N
- 
+
 !       end of I-loop
         IF(FS.NE.0.D0)THEN
         FA=FY
@@ -1296,7 +1298,7 @@ c...............................................................................
         GO TO 10 ! Try again with a smaller step.
         END IF
         END IF
- 
+
         IF(KONV)THEN
         t=tN
         H=H*FY
@@ -1305,7 +1307,7 @@ c...............................................................................
         END DO
         RETURN
         END IF
- 
+
         D(3)=4.D0
         D(5)=1.6D1
         BO=.NOT.BO
@@ -1318,7 +1320,7 @@ c...............................................................................
         H=H*redu
         GO TO 10 ! Try again with smaller step.
         END
- 
+
         subroutine SubSteps(Y0,Y,H,Leaps)! substeps for DIFSYAB
         implicit real*8 (a-h,m,o-z)
         real*8 Y(*),Y0(*)!,ytest(1000)
@@ -1351,12 +1353,12 @@ c...............................................................................
         CHTIMEinc=0
         return
         end
- 
+
         subroutine Take Increments 2 Y(Y)
         INCLUDE 'ARCparams.CH'
         COMMON/IncrementCommon/WTTLinc,XCinc(NMX3),WCinc(NMX3),
      & CMXinc(3),CMVinc(3),ENERGYinc,Energrinc,CHTIMEinc,spin inc(3)
- 
+
         real*8 Y(*)
         save
         L=1
@@ -1390,7 +1392,7 @@ c...............................................................................
 !        Nvar=L
         RETURN
         END
- 
+
         subroutine Put Y to XC WC (Y,Lmx)
          INCLUDE 'ARCparams.CH'
         real*8 Y(*)
@@ -1496,7 +1498,7 @@ c...............................................................................
         SW=SW+WCA
         do k=1,3
         L=L+1
- 
+
         if(WCA.ne.0)then
         SY(L)=WCA*w_new+sy(L)*w_old
         else
@@ -1504,7 +1506,7 @@ c...............................................................................
         end if
         end do ! k
         end do ! i
- 
+
         L=1
         do i=1,N-1
         i0=3*i-3
@@ -1522,21 +1524,21 @@ c...............................................................................
         if(SY(L).eq.0)SY(L)=1
         end do ! k
         end do ! i
- 
- 
+
+
         CMXA=abs(cmx(1))+abs(cmx(2))+abs(cmx(3))+SR/N*w_old
         CMVA=abs(cmv(1))+abs(cmv(2))+abs(cmv(3))+SW/N*w_old
- 
+
         do i=1,3
         L=L+1
         SY(L)=CMXA*w_new+sy(L)*w_old ! cmx
         end do
- 
+
         do i=1,3
         L=L+1
         SY(L)=CMVA*w_new+sy(L)*w_old ! cmv
         end do
- 
+
         L=L+1
         SY(L)=(ABS(ENERGY)+w_old*UPO)*w_new+sy(L)*w_old ! E
         L=L+1
@@ -1552,13 +1554,13 @@ c...............................................................................
         end do
         RETURN
         END
- 
+
         SUBROUTINE EVALUATE X
         INCLUDE 'ARCparams.CH'
         REAL*8 X0(3)
         save
 !        Obtain physical variables from chain quantities.
- 
+
         DO K=1,3
         XI(K)=0.D0
         X0(K)=0.D0
@@ -1590,7 +1592,7 @@ c...............................................................................
         REAL*8 V0(3),VN(*),WI(*)
         save
 !        Obtain physical V's from chain quantities.
- 
+
         DO K=1,3
         V0(k)=0.D0
         VI(k)=0.D0
@@ -1626,7 +1628,7 @@ c...............................................................................
         common/notneeded/rijnotneeded
                  common/deeveet/dv2(3),dv4(3),dv5(3)
                           common/turhia/rw,fr,frm,akiih(3)
- 
+
         save
         Cl=Clight! SPEED OF LIGHT
 !       INITIALIZE THE relativistic acceration(s) here.
@@ -1676,7 +1678,7 @@ c...............................................................................
         end if
         vij2=dw(1)**2+dw(2)**2+dw(3)**2
         RS=2.d0*(m(i)+m(j))/CL**2
- 
+
         RIJ2=dx(1)**2+dx(2)**2+dx(3)**2
         rij=sqrt(rij2)
         rdotv=dx(1)*dw(1)+dx(2)*dw(2)+dx(3)*dw(3)
@@ -1717,7 +1719,7 @@ c...............................................................................
         ACCgr(J1)=ACCgr(J1)-m(i)*dFgr(1)
         ACCgr(J2)=ACCgr(J2)-m(i)*dFgr(2)
         ACCgr(J3)=ACCgr(J3)-m(i)*dFgr(3)
- 
+
                       END IF
         END DO ! J
         END DO ! I
@@ -1726,7 +1728,7 @@ c...............................................................................
          end do ! REMOVE THIS LOOP(diagno only)
         RETURN
         END
- 
+
          subroutine Relativistic terms_not in use ! at the moment this is not used
      &   (I1,X,V,r,rdotv,v2,m1,m2,c,DV,DVgr,spina,dspin)
          implicit real*8 (a-h,m,n,o-z)
@@ -1735,26 +1737,26 @@ c...............................................................................
          data beta,gamma/1.d0,1.d0/
          save
           m=m1+m2
- 
+
           my=m1*m2/m
- 
+
           ny=my/m
           n(1)=x(1)/r
           n(2)=x(2)/r
           n(3)=x(3)/r
- 
+
           nv=rdotv/r
           v4=v2*v2
            r2=r*r
- 
+
                          IF(1.eq.1)THEN
            do i=1,3
           dv2(i)=m/c**2*n(i)/r2*(m/r*(2*(beta+gamma)+2*ny) ! 1/c**2 terms
      &    -v2*(gamma+3*ny)+3*ny/2*nv**2)
      &    +m*v(i)*nv/c**2/r**2*(2*gamma+2-2*ny)
            end do
- 
- 
+
+
           do i=1,3
           dv4(i)=1/c**4*(                               ! 1/c**4 terms
      & +ny*m*n(i)/r2*(-2*v4+1.5d0*v2*nv**2*(3-4*ny)-15*nv**4/8*(1-3*ny))
@@ -1786,7 +1788,7 @@ c...............................................................................
            end do
           return
           end
- 
+
          subroutine Relativistic terms!_ in use ! this is used for PN-term accelarations
      &   (I1,X,V,r,rdotv,vv,m1,m2,c,DV,DVgr,spina,dspin)
          implicit real*8 (a-h,m,n,o-z)
@@ -1804,15 +1806,15 @@ c...............................................................................
          m=m1+m2
          eta=m1*m2/m**2
         A1=2*(2+eta)*(m/r)-(1+3*eta)*vv +1.5d0*eta*vr**2
- 
+
         A2=-.75d0*(12+29*eta)*(m/r)**2-eta*(3-4*eta)*vv**2
      &     -15.d0/8*eta*(1-3*eta)*vr**4+.5d0*eta*(13-4*eta)*(m/r)*vv
      &     +(2+25*eta+2*eta**2)*(m/r)*vr**2+1.5d0*eta*(3-4*eta)*vv*vr**2
- 
+
         A2p5=8.d0/5*eta*(m/r)*vr*(17.d0/3*(m/r)+3*vv)
         A3=(16+(1399./12-41./16*pi2)*eta+71./2*eta*eta)*(m/r)**3
      &    +eta*(20827./840+123./64*pi2-eta**2)*(m/r)**2*vv
-     -    -(1+(22717./168+615./64*pi2)*eta+11./8*eta**2-7*eta**3)
+     &    -(1+(22717./168+615./64*pi2)*eta+11./8*eta**2-7*eta**3)
      &*(m/r)**2*vr**2
      &    -.25d0*eta*(11-49*eta+52*eta**2)*vv**3
      &    +35./16*eta*(1-5*eta+5*eta**2)*vr**6
@@ -1821,12 +1823,12 @@ c...............................................................................
      &    +eta*(121-16*eta-20*eta**2)*(m/r)*vv*vr**2
      &    +3./8*eta*(20-79*eta+60*eta**2)*vv**2*vr**2
      &    -15./8*eta*(4-18*eta+17*eta**2)*vv*vr**4
- 
+
         A3p5=-8./5*eta*(m/r)*vr*(23./14*(43+14*eta)*(m/r)**2
      &       +3./28*(61+70*eta)*vv**2
      &       +70*vr**4+1./42*(519-1267*eta)*(m/r)*vv
      &       +.25d0*(147+188*eta)*(m/r)*vr**2-15/4.*(19+2*eta)*vv*vr**2)
- 
+
         B1=2*(2-eta)*vr
         B2=-.5d0*vr*((4+41*eta+8*eta**2)*(m/r)-eta*(15+4*eta)*vv
      &      +3*eta*(3+2*eta)*vr**2)
@@ -1838,19 +1840,19 @@ c...............................................................................
      &      +eta*(15+27*eta+10*eta**2)*(m/r)*vv
      &      -1/6.d0*eta*(329+177*eta+108*eta**2)*(m/r)*vr**2
      &      -.75d0*eta*(16-37*eta-16*eta**2)*vv*vr**2)
- 
+
          B3p5=8.d0/5.d0*eta*(m/r)*(1/42.d0*(1325+546*eta)*(m/r)**2
      &  +1/28.d0*(313+42*eta)*vv**2+75*vr**4
      &  -1/42.d0*(205+777*eta)*(m/r)*vv
      &  +1/12.d0*(205+424*eta)*(m/r)*vr**2-.75d0*(113+2*eta)*vv*vr**2)
- 
+
 !                A3p5=0
 !                B3p5=0
 !                A2p5=0
 !                B2p5=0
 !                A3=0
 !                B3=0
- 
+
             Atot=A1/c**2+A2/c**4+A2p5/c**5!+A3/c**6+A3p5/c**7
             Btot=B1/c**2+B2/c**4+B2p5/c**5!+B3/c**6+B3p5/c**7
           !  Afric=A2p5/c**5+A3p5/c**7 ! *0 if you want to
@@ -1863,14 +1865,14 @@ c...............................................................................
          dspin(k)=0
          end do
          end if
- 
+
            do k=1,3
            dV(k)=-m/r**2*(n(k)*Atot+v(k)*Btot)/m-dvq(k)/m ! division by m because of the way these
            dvgr(k)=dv(k)!-m/r**2*(n(k)*Afric+v(k)*Bfric)/m      ! are used in calling program
            end do
 !        write(99,*)dvgr,c,x,v  !BG, generates a multi-gigabyte fort.99 file.
        end
- 
+
         subroutine Reduce2cm(x,m,nb,cm)
         implicit real*8 (a-h,m,o-z)
         real*8 x(*),m(*),cm(3)
@@ -1895,7 +1897,7 @@ c...............................................................................
         end do
         return
         end
- 
+
        subroutine cross(a,b,c)
        real*8 a(3),b(3),c(3)
        save
@@ -1904,8 +1906,8 @@ c...............................................................................
        c(3)=a(1)*b(2)-a(2)*b(1)
        return
        end
- 
- 
+
+
       subroutine gopu_SpinTerms(X,V,r,M1,m2,c,alpha,dv3,dalpha)
       implicit real*8 (a-h,m,n,o-z)
       real*8 x(3),v(3),dv3(3),n(3)
@@ -1962,7 +1964,7 @@ c...............................................................................
         end do
        return
        end
- 
+
        subroutine Q2term(m,r,x,v,c,Q2,e,dvq) ! Quadrupole as C. Will advised
        implicit real*8 (a-h,m,o-z)
        real*8 x(3),v(3),dvq(3),Rx(3),Ux(3),e(3)
@@ -1985,7 +1987,7 @@ c...............................................................................
        end do
        return
        end
- 
+
         SUBROUTINE Initial Stepsize(X,V,M,NB,ee,step) ! guesswork for initial stepsize
         IMPLICIT real*8 (A-H,m,O-Z)
         DIMENSION X(*),V(*),M(*)
@@ -2021,7 +2023,7 @@ c...............................................................................
         STEP=0.1d0*U*sqrt(time_step2)
         RETURN
         END
- 
+
         subroutine elmnts ! two-body orbital elements (WITHOUT relativistic corrections)
      & (x,v,m,a,e,mo,inc,Om,oo,alfa,q,tq)
 !       NOTE: wrong results can be produced in exeptional situations
@@ -2041,18 +2043,18 @@ c...............................................................................
         eta=x(1)*w(1)+x(2)*w(2)+x(3)*w(3)
         alfa=2/r-w2
         zeta=1-alfa*r
- 
+
 !       areal velocity vector (jx,jy,jz)
         jx=x(2)*w(3)-x(3)*w(2)
         jy=x(3)*w(1)-x(1)*w(3)
         jz=x(1)*w(2)-x(2)*w(1)
         d=sqrt(jx*jx+jy*jy+jz*jz)
- 
+
 !       eccentricity vector (ex,ey,ez)
         ex=w(2)*jz-w(3)*jy-x(1)/r
         ey=w(3)*jx-w(1)*jz-x(2)/r
         ez=w(1)*jy-w(2)*jx-x(3)/r
- 
+
         e=sqrt(ex*ex+ey*ey+ez*ez)
         b=sqrt(jx*jx+jy*jy)
         inc=atn2(b,jz)*rad
@@ -2092,7 +2094,7 @@ c...............................................................................
         end if
          return
          end
-        function g3(z) ! eioo subroutine 
+        function g3(z) ! eioo subroutine
         implicit real*8 (a-h,o-z)
         save
         if(z.gt.0.025d0)then ! elliptic
@@ -2109,7 +2111,7 @@ c...............................................................................
         end if
         return
         end
- 
+
         SUBROUTINE CONSTANTS OF MOTION(ENE_NB,G,Alag) ! Newtonian constants of motion (i.e. no PN)
 !        IMPLICIT real*8 (A-H,m,O-Z)
 !        DIMENSION G(3)
@@ -2151,9 +2153,9 @@ c...............................................................................
         VY=WC(K2)
         VZ=WC(K3)
         END IF
- 
+
         R2=xx*xx+yy*yy+zz*zz+ee
- 
+
         U=U+MIJ/SQRT(R2)
         T=T+MIJ*(vx*vx+vy*vy+vz*vz)
         G(1)=G(1)+MIJ*(yy*vz-zz*vy)
@@ -2175,7 +2177,7 @@ c...............................................................................
         dSpot=cmethod(1)*U+cmethod(2)*OmegaB+cmethod(3)
         RETURN
         END
- 
+
       SUBROUTINE FIND BINARIES(time)  ! this is a toy routine for finding binaries
       INCLUDE 'ARCparams.CH'
       REAL*8 XX(3),W(3)
@@ -2215,7 +2217,7 @@ c...............................................................................
      & ,' A=',1P,G12.2,' e=',0P,f10.4)
       RETURN
       END
- 
+
         SUBROUTINE  WCMOTION(hs)  ! This routine evaluates the velocity jumps in leapfrog
         INCLUDE 'ARCparams.CH'
          COMMON/IncrementCommon/WTTLinc,XCinc(NMX3),WCinc(NMX3),
@@ -2264,7 +2266,7 @@ c...............................................................................
          OMEGA=OMEGA+omeker*RINV(I) ! Chain contribution 4 TTL if it is used (== cmethod(2).ne.0.0)
          end if
          END DO
- 
+
          LRI=N-1
 !       Physical coordinates
         DO K=1,3
@@ -2322,7 +2324,7 @@ c...............................................................................
                  end do
          IF(clight.gt.0 .or. ivelocity.gt.0)then       ! Velocity-dependent ACC (see the paper:
 !  \bibitem[Hellstr{\"o}m and Mikkola(2010)]{2010CeMDA.106..143H} Hellstr{\"o}m, C., Mikkola, S.\ 2010.\ Explicit algorithmic regularization in the few-body problem for velocity-dependent perturbations.\ Celestial Mechanics and Dynamical Astronomy 106, 143-156.)
- 
+
          call  V_jump(Ww,spinw,cmvw,WTTLw,WC,spin,FC,acc,dt/2
      &,gom,energyj,energrj,1) ! Auxiliary W (=Ww) etc 4 velocity dependent perturbations
          call V_jump(WC,spin,cmv,WTTL,Ww,spinw,FC,acc,dt
@@ -2335,8 +2337,8 @@ c...............................................................................
          END IF
         RETURN
         END
- 
- 
+
+
         subroutine V_jump(WCj,spinj,cmvj,wttlj,WCi,spini,FCj,acc,dt,
      &  gom,energyj,energrj,ind) ! V_jump in case of v-dependent perturbations
         include 'ARCparams.CH'
@@ -2396,7 +2398,7 @@ c...............................................................................
         dotW=dotW+
      &  (V(I0+1)*GOM(k0+1)+V(I0+2)*GOM(K0+2)+V(I0+3)*GOM(K0+3))
         end do
- 
+
                   WTTLj=WTTLj+dotW*dT
                 if(ind.eq.2) WTTLinc=WTTLinc+dotW*dT
                 end if ! cmethod(2).ne.0.0
@@ -2407,7 +2409,7 @@ c...............................................................................
         WCj(L+K)=WCj(L+K)+(FCj(L+K)+afc(L+K))*dT
         END DO
         END DO
- 
+
         do k=1,3
         spinj(k)=spinj(k)+dT*dspin(k)
         cmvj(k)=cmvj(k)+dT*dcmv(k)
@@ -2420,8 +2422,8 @@ c...............................................................................
         end if ! ind.eq.2
         RETURN
         END
- 
- 
+
+
         subroutine V_jACConly(WCj,CMVj,WTTLj,FC,acc,dt,
      &  gom,energyj,energrj) ! V_jump if only coordinate dependent acceleration
         include 'ARCparams.CH'
@@ -2457,10 +2459,10 @@ c...............................................................................
         end do
                   ENERGYj=ENERGYj+dotE*dT
                   EnerGrj=EnerGRj+dotEGR*dT
- 
+
                  ENERGYinc=ENERGYinc+dotE*dT
                  EnerGRinc=EnerGRinc+dotEGR*dT
- 
+
                if(cmethod(2).ne.0)then
         dotW=0
         do I=1,N
@@ -2478,7 +2480,7 @@ c...............................................................................
         WCj(L+K)=WCj(L+K)+(FC(L+K)+afc(L+K))*dT     ! new CHAIN-V values
         END DO
         END DO
- 
+
         do k=1,3
         cmv inc(k)=cmv inc(k)+dT*dcmv(k)  !  CMV incr
         cmvj(k)=cmvj(k)+dT*dcmv(k)        ! CMV values
@@ -2486,10 +2488,10 @@ c...............................................................................
         RETURN
         END
 !---------------------------------------
- 
+
         subroutine Estimate Stepsize(dtime,step)!Stumpff-Weiss method to estimate the s-step
         !to get to the given time (in case of (rather good) approximate  output time is enough)
- 
+
         include 'ARCparams.CH'
         parameter(twopi=6.283185307179586d0)
         common/collision/icollision,ione,itwo,iwarning
@@ -2497,7 +2499,7 @@ c...............................................................................
         common/eitoimi/iei
         real*8 xij(3),vij(3),gx(5)
         common/toolarge/beta,ma,mb,itoo,iw,jw,n_alku
- 
+
       save
                        nr=0
                        nx=0
@@ -2534,7 +2536,7 @@ c...............................................................................
         vij(2)=-WC(K2)
         vij(3)=-WC(K3)
         END IF
- 
+
       i0=3*i-3
       j0=3*j-3
       do k=1,3
@@ -2544,13 +2546,13 @@ c...............................................................................
       rr=cdot(xij,xij)
       r=sqrt(rr)
       alfa=cmethod(1)*m(i)*m(j)+cmethod(2)*OMEC(I,J) ! terms from potential and 'TTL'
- 
+
       mipj=m(i)+m(j)
       vv=cdot(vij,vij)
       oa=2/r-vv/mipj
- 
+
        dltrr=dtime**2*vv ! maximum amount of (distance change)**2 (approx)
- 
+
           if(dltrr.lt.0.000001d0*rr)then
                                     nr=nr+1
       step=step+dtime*alfa/r ! add contributions from large distances
@@ -2595,7 +2597,7 @@ c                                  period=0
 1      continue
        return
        end
- 
+
        SUBROUTINE cfun(z,c)!Stumpff c-functions
        IMPLICIT REAL*8 (A-H,m,O-Z)
        parameter(o2=1.d0/2,o6=1.d0/6,o8=1.d0/8,o16=1.d0/16)
@@ -2614,7 +2616,7 @@ c                                  period=0
       WRITE(6,106)Z,iw,jw,ma,mb,beta,akseli,n_alku
 106   format(' too large Z=',1p,g12.4, '4 c-functions',
      & 0p,2i5,1p,4g12.4,i5,' ijmab_beta ax n_a')
- 
+
        c(1)=0!
        do k=2,5
        c(k)=0!c(k-1)/k ! failure, but let us set something
@@ -2631,7 +2633,7 @@ c                                  period=0
      & + (358614256.d0 - 1029037.d0*h)*h))/
      & (55440.d0*(8117665920.d0 + h*(104602680.d0
      &    + h*(582348.d0 + 1451.d0*h))))
- 
+
        DO  I=1,K  ! 4-fold argument K times
        C3=o6-h*C(5)
        C2=o2-h*C(4)
@@ -2639,14 +2641,14 @@ c                                  period=0
        C(4)=C3*(2.D0-h*C3)*o8
        h=4.d0*h
        END DO
- 
+
        C(3)=o6-Z*C(5)
        C(2)=o2-Z*C(4)
        C(1)=1-Z*C(3)
        RETURN
        END
- 
- 
+
+
 !-------KPLR solver------------------------------
        subroutine Xanom(m,r,eta,zet,beta,t,x,rx,g) ! Solving Kepler's equation
                                                ! in the Stumpff 'Haupgleichung' form.
@@ -2672,7 +2674,7 @@ c                                  period=0
          rx=r
          return
          end if
- 
+
 !        initial estimate (if not given as input i.e. if not x*t>0 )
          if(x*t.le.0.0)then ! no initial estimate
          if(zet.gt.0.0)then ! near pericentre
@@ -2683,7 +2685,7 @@ c                                  period=0
          x=t/r
          end if
          end if
- 
+
 !        first bracket the root by stepping forwards
 !        using the difference equations
            n_alku=0
@@ -2750,13 +2752,13 @@ c                                  period=0
         icase=1
         tau=tau1
         end if
- 
+
         if((x1-x)*(x-x0).lt.0.0.or.i.eq.i/5*5)then !if out_of_brackets or slow
          x=(x0+x1)/2                               ! use bisection
          icase=-1
         goto 11
         end if
- 
+
       if(abs(dzeit).lt.1.d-3*abs(t).and.abs(dx).lt.1.d-3*abs(x))goto99
 11      continue
         call gfunc(x,beta,g) !2.,...
@@ -2766,7 +2768,7 @@ c                                  period=0
         rpp=zet*g0-beta*eta*g(1)
         rlast=r+eta*g(1)+zet*g(2)
         f=r*x+eta*g(2)+zet*g(3)-t
- 
+
         if(f*tau0.gt.0.D0)then ! keep it bracketed
         x0=x
         tau0=f
@@ -2801,7 +2803,7 @@ c                                  period=0
        rx=r+eta*g(1)+zet*g(2)
        return
        end
-       function cdot(a,b) ! eioo subroutine 
+       function cdot(a,b) ! eioo subroutine
        real*8  a(3),b(3),cdot
        cdot=a(1)*b(1)+a(2)*b(2)+a(3)*b(3)
        return
@@ -2814,17 +2816,17 @@ c                                  period=0
           save
           do i=1,3*n  ! Here one adds the v_dependents to df
           df(i)=df(i)-0.d0*v(i) ! a 'friction' example that has no effect (because of 0*v)
- 
+
           end do
           return
           end
- 
+
        subroutine COORDINATE DEPENDENT PERTURBATIONS(ACC) ! USER DEFINED
         INCLUDE 'ARCparams.CH'
- 
+
 !    IN STAND-ALONE-MODE THIS ROUTINE SIMPLY SETS: ACC(I)=0
- 
- 
+
+
         real*8 ACC(*)
         save
 !       HERE ONE MUST EVALUATE THE ACCELERATIONS DUE TO THE PERTURBERS.
@@ -2833,14 +2835,14 @@ c                                  period=0
 !       (X(1)=X_1,X(2)=Y_1,X(3)=Z_1, X(4)=X_2, X(5)=Y_2,...)
 !       After a call to this routine the EXAccerations
 !       are assumed to be in the vector ACC.
- 
- 
+
+
           TrueTIME=Taika+CHTIME ! this is  the time to be used if perturbation depens on time
           do i=1,3*N ! REMOVE if not needed (well, ACC should anyway be zero if no coordinate dependent perturbations)
           ACC(i)=0
           end do
 !                               ! note: chtime is measured from the beginning of this CHAIN call
- 
+
 !---  init acc
          if(1.eq.1)RETURN ! REMOVE THIS STATEMENT IF YOU NEED TO EVALUATE SOMETHING HERE
         DO  I=1,3*N ! compute true inertial coordinates by adding center-of-mass coords
@@ -2849,4 +2851,3 @@ c                                  period=0
         END DO
         return
         end
- 

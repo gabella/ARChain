@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ "$1" = "" ]; then
+  echo "ONEUsage: runarchain <input file>"
+  echo "Input file must exist."
+  exit
+fi
+
+
+if [ ! -f $1 ]; then
+  echo "TWOUsage: runarchain <input file>"
+  echo "Input file must exist."
+  exit
+fi
+
+export PATH=${PATH}:${HOME}/Documents/astro/wormholes/archain/ARChain
+
+# Shell script to run a AR-CHAIN.f input file and to log the start
+# and stop times in time.out, as well as save the stdout too.
+# started 20190917 gabella
+
+timefile="time.out"
+prog="AR-CHAINWH"
+
+# echo "" >> time.out ; date >> time.out; AR-CHAIN < test3bodies.in |tee test3bodies.stdout; date >> time.out
+
+echo "Using input file $1."
+infile=$(basename "$1")
+rootname="${infile%.*}"
+extension="${infile##*.}"
+#echo "rootname $rootname extension $extension"
+
+if true
+then
+  echo "" >> $timefile
+  echo "$1" >> $timefile
+  date >> $timefile
+  $prog < $1 |tee $rootname.stdout
+  date >> $timefile
+fi
