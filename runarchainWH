@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# runarchainWH - To check for an input file to AR-CHAINWH, also
+# to printout a timing file time.out .
+#
+# 20250515 weg, updated, started in 2020.
 
 if [ "$1" = "" ]; then
   echo "ONEUsage: runarchain <input file>"
@@ -13,7 +17,12 @@ if [ ! -f $1 ]; then
   exit
 fi
 
-export PATH=${PATH}:${HOME}/Documents/astro/wormholes/archain/ARChain
+# The shell script path location...
+SCRIPT_DIR=$( cd -- "$( dirname -- "$BASH_SOURCE[0]" )" &> /dev/null && pwd )
+echo "runarchainWH: SCRIPT_DIR is $SCRIPT_NAME ."
+
+#export PATH=${PATH}:${HOME}/Documents/astro/wormholes/archain/ARChain
+export PATH=${PATH}:$SCRIPT_DIR
 
 # Shell script to run a AR-CHAIN.f input file and to log the start
 # and stop times in time.out, as well as save the stdout too.
@@ -24,7 +33,7 @@ prog="AR-CHAINWH"
 
 # echo "" >> time.out ; date >> time.out; AR-CHAIN < test3bodies.in |tee test3bodies.stdout; date >> time.out
 
-echo "Using input file $1."
+echo "runarchainWH: Using input file $1."
 infile=$(basename "$1")
 rootname="${infile%.*}"
 extension="${infile##*.}"
