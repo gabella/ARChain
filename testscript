@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+
+echo $0
+echo $1
+echo $2
+echo "$( dirname -- "$BASH_SOURCE[0]" )"
+
+# The shell script path location...
+SCRIPT_DIR=$( cd -- "$( dirname -- "$BASH_SOURCE[0]" )" &> /dev/null && pwd )
+SCRIPT_DIR="$( dirname -- "$BASH_SOURCE[0]" )"
+echo "runarchainWH: SCRIPT_DIR is $SCRIPT_NAME ."
+
